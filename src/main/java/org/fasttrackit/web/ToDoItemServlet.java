@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(urlPatterns = "/to-do-items")
@@ -36,7 +37,7 @@ public class ToDoItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        long id = Long.parseLong(req.getParameter("id"));
+
         setAccessControlHeaders(resp);
 
         try {
@@ -55,6 +56,21 @@ public class ToDoItemServlet extends HttpServlet {
                     e.getMessage());
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setAccessControlHeaders(resp);
+
+        String id = req.getParameter("id");
+
+        try {
+            toDoItemService.deleteToDoItem(Long.parseLong(id));
+        }catch (Exception e) {
+            resp.sendError(500, "There was an error processing your request. " +
+                    e.getMessage());
+        }
+    }
+
     //for Preflight requests
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
